@@ -19,7 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({ hasData, onReset, onOpenGuide })
             <img
               src="/logo.png"
               alt="PurpleChats"
-              className="w-6 h-6 rounded-md shadow-xs object-cover"
+              className="w-6 h-6 object-contain"
             />
             <span className="font-serif text-base sm:text-lg font-normal text-[#1C1917] tracking-tight">
               {t.appTitle}
