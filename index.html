@@ -16,22 +16,22 @@
     <meta name="keywords" content="whatsapp chat analyzer, whatsapp wrapped, whatsapp wrapped 2024, whatsapp chat statistics, private chat analyzer, group dynamics, whatsapp export, on-device chat analysis" />
     <meta name="robots" content="index, follow" />
     <meta name="google-site-verification" content="elnB37ZguO8Eo4q3bIFhcVoioUi4JUhCBKKSxVCueKk" />
-    <link rel="canonical" href="https://purplechats.app/" />
+    <link rel="canonical" href="https://purplechats.pages.dev/" />
 
     <!-- Open Graph / Facebook / WhatsApp -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://purplechats.app/" />
+    <meta property="og:url" content="https://purplechats.pages.dev/" />
     <meta property="og:title" content="PurpleChats | Private WhatsApp Wrapped & Group Insights" />
     <meta property="og:description" content="Explore your WhatsApp group dynamics, response habits, and personalized Wrapped cards 100% in your browser. Private by design—zero data leaves your device." />
-    <meta property="og:image" content="https://purplechats.app/og-image.png" />
+    <meta property="og:image" content="https://purplechats.pages.dev/og-image.png" />
     <meta property="og:site_name" content="PurpleChats" />
 
     <!-- Twitter / X Cards -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://purplechats.app/" />
+    <meta name="twitter:url" content="https://purplechats.pages.dev/" />
     <meta name="twitter:title" content="PurpleChats | Private WhatsApp Wrapped & Group Insights" />
     <meta name="twitter:description" content="Explore your WhatsApp group dynamics, response habits, and personalized Wrapped cards 100% in your browser. Private by design—zero data leaves your device." />
-    <meta name="twitter:image" content="https://purplechats.app/og-image.png" />
+    <meta name="twitter:image" content="https://purplechats.pages.dev/og-image.png" />
 
     <!-- Structured Data (Schema.org JSON-LD) -->
     <script type="application/ld+json">
@@ -39,7 +39,7 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "PurpleChats",
-      "url": "https://purplechats.app/",
+      "url": "https://purplechats.pages.dev/",
       "description": "Private, on-device WhatsApp chat analyzer that generates personalized Wrapped story cards and behavioral group insights.",
       "applicationCategory": "UtilitiesApplication",
       "operatingSystem": "Any",
@@ -61,7 +61,31 @@
     </script>
   </head>
   <body class="bg-[#F5F2EB] text-[#1C1917] antialiased min-h-screen">
-    <div id="root"></div>
+    <div id="root">
+      <!-- Semantic pre-render fallback for instant search engine indexing (Wave-1) -->
+      <main class="max-w-4xl mx-auto px-4 py-16 text-center">
+        <h1 class="font-serif text-3xl sm:text-4xl text-[#1C1917] mb-4">
+          PurpleChats — Private WhatsApp Chat Analyzer & Wrapped Generator
+        </h1>
+        <p class="text-base text-[#57534E] max-w-2xl mx-auto mb-8">
+          Explore your WhatsApp group dynamics, conversational habits, and personalized Wrapped cards 100% in your browser. Private by design — zero chat logs or files ever leave your device.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left max-w-3xl mx-auto text-sm text-[#44403C]">
+          <div class="p-4 bg-white/60 rounded-xl border border-[#E2DDD3]">
+            <h2 class="font-bold text-[#1C1917] mb-1">100% Client-Side Privacy</h2>
+            <p>Your chat archive is parsed locally via in-browser Web Workers. No database, no tracking, zero server uploads.</p>
+          </div>
+          <div class="p-4 bg-white/60 rounded-xl border border-[#E2DDD3]">
+            <h2 class="font-bold text-[#1C1917] mb-1">WhatsApp Wrapped Mode</h2>
+            <p>Interactive 3D story cards highlighting top talkers, chat streaks, peak hours, and response time percentiles.</p>
+          </div>
+          <div class="p-4 bg-white/60 rounded-xl border border-[#E2DDD3]">
+            <h2 class="font-bold text-[#1C1917] mb-1">Group Behavioral Insights</h2>
+            <p>Visual heatmaps, emoji frequency leaderboards, relational interaction graphs, and activity timelines.</p>
+          </div>
+        </div>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

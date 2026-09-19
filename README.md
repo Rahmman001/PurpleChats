@@ -5,6 +5,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/Rahmman001/PurpleChats?style=social)](https://github.com/Rahmman001/PurpleChats)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![Privacy: 100% Client-Side](https://img.shields.io/badge/Privacy-100%25%20On--Device-success.svg)](#privacy-first)
+[![Live App](https://img.shields.io/badge/Live%20App-purplechats.pages.dev-7C3AED.svg)](https://purplechats.pages.dev)
 
 ---
 
