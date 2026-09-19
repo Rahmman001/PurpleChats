@@ -8,34 +8,60 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#080c14',
-        surface: {
-          DEFAULT: '#0f172a',
-          card: 'rgba(15, 23, 42, 0.75)',
-          elevated: '#1e293b',
-          highlight: 'rgba(255, 255, 255, 0.05)',
-        },
-        brand: {
-          emerald: '#10b981',
-          hover: '#059669',
-          glow: 'rgba(16, 185, 129, 0.15)',
-        },
-        participant: {
-          1: '#10b981',
-          2: '#06b6d4',
-          3: '#8b5cf6',
-          4: '#f59e0b',
-          5: '#ec4899',
-          6: '#3b82f6',
-        }
+        // Core Minimalist Monochrome Palette
+        "charcoal": "#111111",
+        "off-black": "#2F3437",
+        "muted-gray": "#787774",
+        "bone": "#F7F6F3",
+        "surface": "#FFFFFF",
+        "surface-subtle": "#F9F9F8",
+        "border-subtle": "#EAEAEA",
+
+        // Spot Pastels
+        "pastel-green": "#EDF3EC",
+        "pastel-green-text": "#346538",
+        "pastel-blue": "#E1F3FE",
+        "pastel-blue-text": "#1F6C9F",
+        "pastel-red": "#FDEBEC",
+        "pastel-red-text": "#9F2F2D",
+        "pastel-yellow": "#FBF3DB",
+        "pastel-yellow-text": "#956400",
+
+        // Backward compatibility mappings seamlessly converted to warm monochrome
+        "dark-green": "#111111",
+        "midnight": "#2F3437",
+        "rosy": "#9F2F2D",
+        "moss": "#787774",
+        "beige": "#F7F6F3",
       },
       fontFamily: {
-        sans: ['Outfit', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        mono: ['Geist Mono', 'JetBrains Mono', 'Fira Code', 'monospace'],
+        sans: [
+          'SF Pro Display',
+          'Geist Sans',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Helvetica Neue',
+          'sans-serif',
+        ],
+        mono: [
+          'Geist Mono',
+          'SF Mono',
+          'JetBrains Mono',
+          'monospace',
+        ],
+        serif: [
+          'Newsreader',
+          'Playfair Display',
+          'Georgia',
+          'Cambria',
+          'Times New Roman',
+          'serif',
+        ],
       },
-      animation: {
-        'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      }
+      borderRadius: {
+        'card': '10px',
+        'interactive': '6px',
+      },
     },
   },
   plugins: [],

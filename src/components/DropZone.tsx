@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { UploadCloud, FileText, AlertCircle, Loader2 } from 'lucide-react';
+import { UploadCloud, Loader2 } from 'lucide-react';
 import { ParsingProgress } from '../types/chat';
+import { useLanguage } from '../utils/i18n';
 
 interface DropZoneProps {
   onFileSelected: (file: File) => void;
@@ -9,6 +10,7 @@ interface DropZoneProps {
 }
 
 export const DropZone: React.FC<DropZoneProps> = ({ onFileSelected, progress, error }) => {
+  const { t } = useLanguage();
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -36,18 +38,18 @@ export const DropZone: React.FC<DropZoneProps> = ({ onFileSelected, progress, er
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full flex flex-col justify-center">
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => !progress && fileInputRef.current?.click()}
-        className={`relative group cursor-pointer rounded-2xl border-2 border-dashed p-8 sm:p-10 transition-all duration-300 flex flex-col items-center justify-center text-center ${
+        className={`relative w-full h-full min-h-[240px] cursor-pointer rounded-3xl border-2 border-dashed transition-all duration-200 flex flex-col items-center justify-center text-center p-6 sm:p-8 ${
           isDragging
-            ? 'border-brand-emerald bg-brand-emerald/10 scale-[1.01] shadow-[0_0_30px_rgba(16,185,129,0.2)]'
+            ? 'border-[#16A34A] bg-[#FAF8F5] shadow-lg scale-[1.01]'
             : progress
-            ? 'border-white/20 bg-surface/80 cursor-wait'
-            : 'border-white/10 hover:border-brand-emerald/50 bg-surface/50 hover:bg-surface/80 glass-card'
+            ? 'border-[#E2DDD3] bg-[#EFECE6] cursor-wait'
+            : 'border-[#D5CDBC] hover:border-[#1C1917] bg-[#F5F2EB] hover:bg-[#FAF8F5] shadow-[0_4px_24px_rgba(0,0,0,0.02)] hover:shadow-md'
         }`}
       >
         <input
@@ -60,49 +62,40 @@ export const DropZone: React.FC<DropZoneProps> = ({ onFileSelected, progress, er
         />
 
         {progress ? (
-          <div className="flex flex-col items-center space-y-4 py-4">
-            <div className="relative flex items-center justify-center">
-              <Loader2 className="w-12 h-12 text-brand-emerald animate-spin" />
-              <span className="absolute font-mono text-xs font-bold text-white">
-                {progress.percentage}%
-              </span>
-            </div>
+          <div className="flex flex-col items-center gap-3 py-4">
+            <Loader2 className="w-7 h-7 text-[#1C1917] animate-spin" />
             <div className="space-y-1">
-              <p className="text-sm font-semibold text-white capitalize">
-                {progress.phase === 'parsing' ? 'Reading & tokenizing messages...' : 'Analyzing conversation dynamics...'}
+              <p className="font-serif text-sm font-normal text-[#1C1917]">
+                {progress.phase === 'parsing' ? 'Reading messages...' : 'Unpacking group insights...'}
               </p>
               {progress.messageCount > 0 && (
-                <p className="text-xs font-mono text-brand-emerald">
-                  {progress.messageCount.toLocaleString()} messages parsed so far
+                <p className="text-[11px] font-mono text-[#78716C]">
+                  {progress.messageCount.toLocaleString()} messages parsed
                 </p>
               )}
             </div>
           </div>
         ) : (
           <>
-            <div className="w-16 h-16 rounded-2xl bg-surface-elevated border border-white/10 flex items-center justify-center text-brand-emerald mb-4 group-hover:scale-110 group-hover:border-brand-emerald/40 transition-transform duration-300 shadow-lg">
-              <UploadCloud className="w-8 h-8" />
+            <div className="w-12 h-12 rounded-2xl bg-[#EFECE6] border border-[#E2DDD3] flex items-center justify-center mb-3 shadow-sm">
+              <UploadCloud className="w-6 h-6 text-[#1C1917]" />
             </div>
-
-            <h3 className="text-lg font-bold text-white mb-1.5 tracking-tight">
-              Drop your WhatsApp export here
-            </h3>
-            <p className="text-xs sm:text-sm text-zinc-400 max-w-xs mb-4">
-              Drag & drop your <span className="font-mono text-zinc-200">_chat.txt</span> or <span className="font-mono text-zinc-200">.zip</span> archive, or click to browse.
+            <p className="font-serif text-lg sm:text-xl font-normal text-[#1C1917] mb-1 tracking-tight">
+              {t.dropZonePrompt}
             </p>
-
-            <div className="flex items-center space-x-2 text-[11px] font-mono text-zinc-500 uppercase tracking-wider">
-              <FileText className="w-3.5 h-3.5" />
-              <span>Supports iOS & Android formats</span>
-            </div>
+            <p className="text-xs font-serif italic text-[#57534E] max-w-[220px] mb-3 leading-relaxed">
+              Accepts <span className="font-mono not-italic text-[#1C1917]">.txt</span> or <span className="font-mono not-italic text-[#1C1917]">.zip</span> from iOS or Android
+            </p>
+            <span className="text-[9px] font-mono uppercase tracking-widest px-3 py-1 rounded-full bg-[#E7F3EC] text-[#15803D] font-bold border border-[#CDE5D5]">
+              {t.onDeviceBadge}
+            </span>
           </>
         )}
       </div>
 
       {error && (
-        <div className="mt-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center space-x-2 animate-in fade-in">
-          <AlertCircle className="w-4 h-4 flex-shrink-0" />
-          <span>{error}</span>
+        <div className="mt-3 p-3.5 rounded-2xl bg-[#FEF2F2] border border-[#FECACA] text-[#991B1B] text-xs font-serif">
+          {error}
         </div>
       )}
     </div>

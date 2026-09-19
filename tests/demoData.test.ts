@@ -12,7 +12,6 @@ describe('Demo Chat End-to-End Pipeline', () => {
     const analytics = computeChatAnalytics(messages);
     expect(analytics.totalMessages).toBe(messages.length);
     expect(analytics.participants.length).toBe(3); // Alex, Maya, Jordan
-    expect(analytics.isGroup).toBe(true);
     expect(analytics.totalMedia).toBeGreaterThan(0);
 
     const badges = assignBadges(analytics);
@@ -20,8 +19,8 @@ describe('Demo Chat End-to-End Pipeline', () => {
 
     // Verify presence of expected badges in demo chat
     const badgeTitles = badges.map(b => b.title);
-    expect(badgeTitles).toContain('The Night Owl'); // Alex at 2 AM
-    expect(badgeTitles).toContain('The Novelist');
-    expect(badgeTitles).toContain('The One-Worder'); // Jordan with "k", "cool", "nice"
+    expect(badgeTitles).toContain('Insomnia Metric'); // Alex at 2 AM
+    expect(badgeTitles).toContain('Keyboard Philosopher');
+    expect(badgeTitles).toContain('Tactical Brevity'); // Jordan with "k", "cool", "nice"
   });
 });

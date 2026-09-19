@@ -65,4 +65,56 @@ function add(a, b) {
     expect(messages[1].isMedia).toBe(true);
     expect(messages[0].wordCount).toBe(0);
   });
+
+  it('should extract push names and prioritize them over phone numbers', () => {
+    const chat = `[14/01/24, 09:16:05 AM] +1 (555) 123-4567 (~Alex): Hey everyone!
+[14/01/24, 09:17:00 AM] +1 (555) 123-4567: Did you get my push name?
+[14/01/24, 09:18:00 AM] ~ Maya: Yes, I see it!`;
+
+    const messages = parseWhatsAppChat(chat);
+    expect(messages).toHaveLength(3);
+    // Both messages from the phone number should resolve to the extracted push name "~ Alex"
+    expect(messages[0].sender).toBe('~ Alex');
+    expect(messages[1].sender).toBe('~ Alex');
+    // ~ Maya resolves to ~ Maya
+    expect(messages[2].sender).toBe('~ Maya');
+  });
+
+  it('should apply smart partial masking when a phone number has no push name', () => {
+    const chat = `[14/01/24, 09:16:05 AM] +91 98765 43210: Hello from India!
+[14/01/24, 09:17:00 AM] +44 7911 123456: Cheers from London!`;
+
+    const messages = parseWhatsAppChat(chat);
+    expect(messages).toHaveLength(2);
+    expect(messages[0].sender).toBe('+91 •••• 3210');
+    expect(messages[1].sender).toBe('+44 •••• 3456');
+  });
+
+  it('should strip invisible unicode LTR/RTL marks commonly found in iOS exports', () => {
+    // Unicode \u200E (LTR mark) prefixed before bracket
+    const chat = `\u200E[14/01/24, 09:16:05 AM] Maya: Invisible unicode test!
+\u200F[14/01/24, 09:17:00 AM] Alex: Received and parsed.`;
+
+    const messages = parseWhatsAppChat(chat);
+    expect(messages).toHaveLength(2);
+    expect(messages[0].sender).toBe('Maya');
+    expect(messages[0].content).toBe('Invisible unicode test!');
+    expect(messages[1].sender).toBe('Alex');
+    expect(messages[1].content).toBe('Received and parsed.');
+  });
+
+  it('should correctly parse ISO YYYY-MM-DD date formats without year corruption', () => {
+    const chat = `2024-05-12, 14:30 - Maya: Testing ISO date
+2024/05/12, 14:35 - Alex: Clean year parsing`;
+
+    const messages = parseWhatsAppChat(chat);
+    expect(messages).toHaveLength(2);
+    expect(messages[0].timestamp.getFullYear()).toBe(2024);
+    expect(messages[0].timestamp.getMonth()).toBe(4); // 0-indexed May
+    expect(messages[0].timestamp.getDate()).toBe(12);
+
+    expect(messages[1].timestamp.getFullYear()).toBe(2024);
+    expect(messages[1].timestamp.getMonth()).toBe(4);
+    expect(messages[1].timestamp.getDate()).toBe(12);
+  });
 });

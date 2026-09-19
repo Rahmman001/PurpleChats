@@ -8,11 +8,9 @@ describe('Personality Archetypes & Badges Engine', () => {
       name: 'Alice',
       messageCount: 100,
       wordCount: 2500, // 25 words/msg -> Novelist
-      mediaCount: 10,
       percentage: 50,
       color: '#10b981',
       medianResponseMinutes: 0.8, // < 1 min -> Quick Draw
-      averageResponseMinutes: 1.2,
       initiationCount: 15, // The Spark
       doubleTextCount: 5,
       nightOwlCount: 22, // The Night Owl
@@ -24,11 +22,9 @@ describe('Personality Archetypes & Badges Engine', () => {
       name: 'Bob',
       messageCount: 100,
       wordCount: 300, // 3 words/msg -> One worder
-      mediaCount: 2,
       percentage: 50,
       color: '#06b6d4',
       medianResponseMinutes: 45.0, // > 30 min -> Phantom
-      averageResponseMinutes: 60.0,
       initiationCount: 2,
       doubleTextCount: 1,
       nightOwlCount: 0,
@@ -48,19 +44,19 @@ describe('Personality Archetypes & Badges Engine', () => {
 
     expect(badges.length).toBeGreaterThan(0);
 
-    const nightOwl = badges.find(b => b.title === 'The Night Owl');
+    const nightOwl = badges.find(b => b.title === 'Insomnia Metric');
     expect(nightOwl).toBeDefined();
     expect(nightOwl?.recipientName).toBe('Alice');
 
-    const earlyBird = badges.find(b => b.title === 'The Early Bird');
+    const earlyBird = badges.find(b => b.title === '5AM Club');
     expect(earlyBird).toBeDefined();
     expect(earlyBird?.recipientName).toBe('Bob');
 
-    const novelist = badges.find(b => b.title === 'The Novelist');
+    const novelist = badges.find(b => b.title === 'Keyboard Philosopher');
     expect(novelist).toBeDefined();
     expect(novelist?.recipientName).toBe('Alice');
 
-    const phantom = badges.find(b => b.title === 'The Phantom');
+    const phantom = badges.find(b => b.title === 'Asynchronous');
     expect(phantom).toBeDefined();
     expect(phantom?.recipientName).toBe('Bob');
   });

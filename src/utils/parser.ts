@@ -1,4 +1,9 @@
 import { ChatMessage } from '../types/chat';
+import {
+  extractSenderDetails,
+  normalizePhoneKey,
+  resolveSenderName,
+} from './phoneHandler';
 
 // Regex patterns for WhatsApp exports
 // iOS: [14/01/24, 09:16:05 AM] or [1/14/24, 9:16:05 PM] or [14.01.24, 09:16:05]
@@ -38,19 +43,28 @@ const SYSTEM_PATTERNS = [
 function parseDate(dateStr: string, timeStr: string): Date {
   try {
     const dateParts = dateStr.split(/[/.-]/).map(p => parseInt(p, 10));
-    let day = dateParts[0];
-    let month = dateParts[1] - 1; // 0-indexed
-    let year = dateParts[2];
+    let day: number, month: number, year: number;
 
-    if (year < 100) {
-      year += 2000;
-    }
+    if (dateParts[0] > 1000) {
+      // YYYY-MM-DD or YYYY/MM/DD
+      year = dateParts[0];
+      month = dateParts[1] - 1;
+      day = dateParts[2];
+    } else {
+      day = dateParts[0];
+      month = dateParts[1] - 1;
+      year = dateParts[2];
 
-    // Heuristic: if month > 11, it was probably MM/DD/YYYY format
-    if (month > 11 && day <= 12) {
-      const temp = day;
-      day = dateParts[1];
-      month = temp - 1;
+      if (year < 100) {
+        year += 2000;
+      }
+
+      // Heuristic: if month > 11, it was probably MM/DD/YYYY format
+      if (month > 11 && day <= 12) {
+        const temp = day;
+        day = dateParts[1];
+        month = temp - 1;
+      }
     }
 
     const cleanTime = timeStr.replace(/[\u202F\u00A0]/g, ' ').trim();
@@ -74,10 +88,12 @@ function parseDate(dateStr: string, timeStr: string): Date {
 export function parseWhatsAppChat(rawText: string): ChatMessage[] {
   const lines = rawText.split(/\r?\n/);
   const messages: ChatMessage[] = [];
+  const phoneToPushMap = new Map<string, string>();
   let currentMsg: ChatMessage | null = null;
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+    // Strip invisible unicode direction marks (LTR \u200E, RTL \u200F) and BOM
+    const line = lines[i].replace(/[\u200E\u200F\u202A-\u202E\uFEFF]/g, '');
     if (!line.trim()) continue;
 
     let match = line.match(IOS_REGEX);
@@ -105,6 +121,12 @@ export function parseWhatsAppChat(rawText: string): ChatMessage[] {
         const lowerRest = rest.toLowerCase();
         if (SYSTEM_PATTERNS.some(p => lowerRest.includes(p))) {
           isSystem = true;
+        } else {
+          // Record any push names associated with phone numbers across the chat
+          const details = extractSenderDetails(sender);
+          if (details.phone && details.pushName) {
+            phoneToPushMap.set(normalizePhoneKey(details.phone), details.pushName);
+          }
         }
       } else {
         // No colon -> system message
@@ -115,36 +137,35 @@ export function parseWhatsAppChat(rawText: string): ChatMessage[] {
       const lowerContent = content.toLowerCase();
       const isMedia = MEDIA_PATTERNS.some(p => lowerContent.includes(p));
 
-      // Calculate words and letters
+      // Calculate word count
       const wordCount = isMedia || isSystem ? 0 : content.split(/\s+/).filter(Boolean).length;
-      const letterCount = isMedia || isSystem ? 0 : content.replace(/\s+/g, '').length;
-
       const timestamp = parseDate(dateStr, timeStr);
 
       currentMsg = {
         id: `msg-${messages.length + 1}`,
         timestamp,
-        dateStr,
-        timeStr,
         sender,
         content,
         isMedia,
         isSystem,
         wordCount,
-        letterCount,
       };
     } else if (currentMsg && !currentMsg.isSystem) {
       // Continuation of multi-line message
       currentMsg.content += '\n' + line;
       if (!currentMsg.isMedia) {
         currentMsg.wordCount += line.split(/\s+/).filter(Boolean).length;
-        currentMsg.letterCount += line.replace(/\s+/g, '').length;
       }
     }
   }
 
   if (currentMsg && !currentMsg.isSystem) {
     messages.push(currentMsg);
+  }
+
+  // Resolve sender names: prioritize push names globally, then smart partial mask phone numbers
+  for (let i = 0; i < messages.length; i++) {
+    messages[i].sender = resolveSenderName(messages[i].sender, phoneToPushMap);
   }
 
   return messages;

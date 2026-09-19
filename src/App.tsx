@@ -10,8 +10,9 @@ import { DEMO_CHAT_TEXT } from './utils/demoData';
 import { parseWhatsAppChat } from './utils/parser';
 import { computeChatAnalytics } from './utils/analytics';
 import { assignBadges } from './utils/badges';
+import { LanguageProvider } from './utils/i18n';
 
-export default function App() {
+function AppContent() {
   const [analytics, setAnalytics] = useState<ChatAnalytics | null>(null);
   const [progress, setProgress] = useState<ParsingProgress | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -59,28 +60,11 @@ export default function App() {
     };
   }, []);
 
-  // Process raw text either through Web Worker or synchronous fallback
+  // Process raw text through Web Worker
   const processRawText = (rawText: string) => {
     setError(null);
-
-    if (workerRef.current) {
-      setProgress({ phase: 'reading', percentage: 10, messageCount: 0 });
-      workerRef.current.postMessage({ rawText });
-    } else {
-      // Synchronous fallback if worker fails to initialize
-      try {
-        const messages = parseWhatsAppChat(rawText);
-        if (messages.length === 0) {
-          setError('No valid messages could be parsed from this file. Check the format in the Export Guide.');
-          return;
-        }
-        const calculated = computeChatAnalytics(messages);
-        calculated.badges = assignBadges(calculated);
-        setAnalytics(calculated);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to analyze chat.');
-      }
-    }
+    setProgress({ phase: 'reading', percentage: 10, messageCount: 0 });
+    workerRef.current?.postMessage({ rawText });
   };
 
   // Handle file drop/upload
@@ -122,14 +106,14 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-zinc-100 flex flex-col selection:bg-brand-emerald selection:text-black">
-      <Navbar
+    <div className={`bg-[#F5F2EB] text-[#1C1917] flex flex-col ${!analytics ? 'min-h-dvh md:h-dvh md:overflow-hidden' : 'min-h-screen'}`}>
+        <Navbar
         hasData={!!analytics}
         onReset={handleReset}
         onOpenGuide={() => setIsGuideOpen(true)}
       />
 
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 min-h-0 flex flex-col">
         {!analytics ? (
           <Hero
             onFileSelected={handleFileSelected}
@@ -139,19 +123,42 @@ export default function App() {
             error={error}
           />
         ) : (
-          <BentoGrid
-            analytics={analytics}
-            onOpenWrapped={() => setIsWrappedOpen(true)}
-          />
+          <div className="w-full flex-1">
+            {/* Print-Only Dossier Header */}
+            <div className="hidden print:block max-w-7xl mx-auto px-4 pt-4 pb-4 mb-6 border-b border-[#E2DDD3]">
+              <div className="flex items-baseline justify-between">
+                <div>
+                  <span className="text-[9px] font-mono uppercase tracking-widest text-[#78716C] block">
+                    Confidential Archive Dossier
+                  </span>
+                  <h1 className="font-serif text-2xl text-[#1C1917] font-normal">
+                    WhatsApp Group Intelligence Report
+                  </h1>
+                </div>
+                <div className="text-right">
+                  <span className="text-[9px] font-mono text-[#15803D] uppercase tracking-wider block font-bold">
+                    100% On-Device · Zero External Servers
+                  </span>
+                  <span className="text-[9px] font-mono text-[#78716C]">
+                    Generated {new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <BentoGrid
+              analytics={analytics}
+              onOpenWrapped={() => setIsWrappedOpen(true)}
+            />
+          </div>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="w-full border-t border-white/5 py-6 px-4 text-center text-xs text-zinc-500 font-mono">
-        <p>
-          WhatsApp Chat Analyzer v2 · 100% Client-Side Privacy · No data is ever transmitted to any server
-        </p>
-      </footer>
+      {analytics && (
+        <footer className="w-full border-t border-[#E2DDD3] py-6 px-4 text-center text-[11px] font-mono text-[#78716C] shrink-0 bg-[#F5F2EB] print:bg-white print:py-4">
+          <p>Processed entirely in your browser · No messages or data ever leave this device</p>
+        </footer>
+      )}
 
       {/* Modals */}
       <ExportGuideModal
@@ -167,5 +174,13 @@ export default function App() {
         />
       )}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }

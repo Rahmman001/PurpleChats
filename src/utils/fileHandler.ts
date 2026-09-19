@@ -7,10 +7,13 @@ export async function extractChatTextFromFile(file: File): Promise<string> {
     const arrayBuffer = await file.arrayBuffer();
     const unzipped = unzipSync(new Uint8Array(arrayBuffer));
 
-    // Look for _chat.txt or any .txt file in the archive
-    let chatFileKey = Object.keys(unzipped).find(name => name.toLowerCase().endsWith('_chat.txt'));
+    // Look for _chat.txt or any .txt file in the archive (ignoring macOS resource fork files)
+    const validTxtKeys = Object.keys(unzipped).filter(
+      name => !name.startsWith('__MACOSX') && !name.includes('/._') && !name.startsWith('._')
+    );
+    let chatFileKey = validTxtKeys.find(name => name.toLowerCase().endsWith('_chat.txt'));
     if (!chatFileKey) {
-      chatFileKey = Object.keys(unzipped).find(name => name.toLowerCase().endsWith('.txt'));
+      chatFileKey = validTxtKeys.find(name => name.toLowerCase().endsWith('.txt'));
     }
 
     if (!chatFileKey) {

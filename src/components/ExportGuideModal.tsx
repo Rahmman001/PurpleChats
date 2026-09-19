@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Smartphone, Apple } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface ExportGuideModalProps {
   isOpen: boolean;
@@ -9,96 +9,129 @@ interface ExportGuideModalProps {
 export const ExportGuideModal: React.FC<ExportGuideModalProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<'ios' | 'android'>('ios');
 
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg glass-card-elevated rounded-2xl p-6 sm:p-7 shadow-2xl border border-white/10">
-        <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
-          <h3 className="text-lg font-bold text-white tracking-tight">
-            How to Export Your WhatsApp Chat
-          </h3>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg bg-[#F5F2EB] border border-[#E7E2D8] rounded-3xl p-6 sm:p-8 shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-[#E2DDD3] mb-5">
+          <div>
+            <span className="text-[9px] font-mono uppercase tracking-widest text-[#78716C] block mb-1">
+              Quick Guide · On-Device Privacy
+            </span>
+            <h3 className="font-serif text-xl sm:text-2xl font-normal text-[#1C1917] tracking-tight">
+              How to export your chat from WhatsApp
+            </h3>
+          </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-full bg-[#EFECE6] border border-[#E2DDD3] text-[#78716C] hover:text-[#1C1917] transition-colors cursor-pointer shrink-0"
+            title="Close guide"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Tab switches */}
-        <div className="grid grid-cols-2 gap-2 p-1 bg-surface-elevated rounded-xl mb-6">
+        {/* Platform Tabs */}
+        <div className="flex gap-1.5 p-1 bg-[#EFECE6] border border-[#E2DDD3] rounded-full mb-6">
           <button
             onClick={() => setActiveTab('ios')}
-            className={`flex items-center justify-center space-x-2 py-2 rounded-lg text-sm font-medium transition-all ${
+            className={`flex-1 py-1.5 rounded-full text-xs font-mono font-medium transition-all cursor-pointer ${
               activeTab === 'ios'
-                ? 'bg-brand-emerald text-black font-semibold shadow-md'
-                : 'text-zinc-400 hover:text-white'
+                ? 'bg-[#1C1917] text-white shadow-xs'
+                : 'text-[#78716C] hover:text-[#1C1917]'
             }`}
           >
-            <Apple className="w-4 h-4" />
-            <span>iPhone (iOS)</span>
+            Apple iOS
           </button>
           <button
             onClick={() => setActiveTab('android')}
-            className={`flex items-center justify-center space-x-2 py-2 rounded-lg text-sm font-medium transition-all ${
+            className={`flex-1 py-1.5 rounded-full text-xs font-mono font-medium transition-all cursor-pointer ${
               activeTab === 'android'
-                ? 'bg-brand-emerald text-black font-semibold shadow-md'
-                : 'text-zinc-400 hover:text-white'
+                ? 'bg-[#1C1917] text-white shadow-xs'
+                : 'text-[#78716C] hover:text-[#1C1917]'
             }`}
           >
-            <Smartphone className="w-4 h-4" />
-            <span>Android</span>
+            Google Android
           </button>
         </div>
 
-        {/* Steps */}
+        {/* Steps List */}
         {activeTab === 'ios' ? (
-          <ol className="space-y-4 text-sm text-zinc-300">
-            <li className="flex items-start space-x-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-surface-elevated border border-white/10 text-brand-emerald flex items-center justify-center text-xs font-mono font-bold">1</span>
-              <span>Open the WhatsApp chat you want to analyze and tap the contact or group name at the top.</span>
+          <ol className="space-y-3.5 text-xs sm:text-sm font-serif text-[#57534E]">
+            <li className="flex items-start gap-3">
+              <span className="shrink-0 w-6 h-6 rounded-full bg-[#EFECE6] border border-[#E2DDD3] text-[#1C1917] flex items-center justify-center text-[10px] font-mono mt-0.5 font-bold">
+                01
+              </span>
+              <span>Open the WhatsApp chat and tap the contact or group name at the very top.</span>
             </li>
-            <li className="flex items-start space-x-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-surface-elevated border border-white/10 text-brand-emerald flex items-center justify-center text-xs font-mono font-bold">2</span>
-              <span>Scroll down to the bottom and tap <strong className="text-white">Export Chat</strong>.</span>
+            <li className="flex items-start gap-3">
+              <span className="shrink-0 w-6 h-6 rounded-full bg-[#EFECE6] border border-[#E2DDD3] text-[#1C1917] flex items-center justify-center text-[10px] font-mono mt-0.5 font-bold">
+                02
+              </span>
+              <span>Scroll down and tap <strong className="text-[#1C1917] font-semibold">Export Chat</strong>.</span>
             </li>
-            <li className="flex items-start space-x-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-surface-elevated border border-white/10 text-brand-emerald flex items-center justify-center text-xs font-mono font-bold">3</span>
-              <span>Select <strong className="text-brand-emerald">Without Media</strong> (speeds up export and protects privacy).</span>
+            <li className="flex items-start gap-3">
+              <span className="shrink-0 w-6 h-6 rounded-full bg-[#EFECE6] border border-[#E2DDD3] text-[#1C1917] flex items-center justify-center text-[10px] font-mono mt-0.5 font-bold">
+                03
+              </span>
+              <span>Choose <strong className="text-[#1C1917] font-semibold">Without Media</strong> (this exports faster and keeps your archive lightweight).</span>
             </li>
-            <li className="flex items-start space-x-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-surface-elevated border border-white/10 text-brand-emerald flex items-center justify-center text-xs font-mono font-bold">4</span>
-              <span>Save the <code className="text-xs font-mono text-zinc-200 bg-surface-elevated px-1.5 py-0.5 rounded">.zip</code> or <code className="text-xs font-mono text-zinc-200 bg-surface-elevated px-1.5 py-0.5 rounded">_chat.txt</code> to your Files or AirDrop it to your computer, then drop it here!</span>
+            <li className="flex items-start gap-3">
+              <span className="shrink-0 w-6 h-6 rounded-full bg-[#EFECE6] border border-[#E2DDD3] text-[#1C1917] flex items-center justify-center text-[10px] font-mono mt-0.5 font-bold">
+                04
+              </span>
+              <span>Save the <code className="text-xs font-mono text-[#1C1917] bg-[#EFECE6] border border-[#E2DDD3] px-1.5 py-0.5 rounded">.zip</code> or <code className="text-xs font-mono text-[#1C1917] bg-[#EFECE6] border border-[#E2DDD3] px-1.5 py-0.5 rounded">.txt</code> file to your device and drop it in.</span>
             </li>
           </ol>
         ) : (
-          <ol className="space-y-4 text-sm text-zinc-300">
-            <li className="flex items-start space-x-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-surface-elevated border border-white/10 text-brand-emerald flex items-center justify-center text-xs font-mono font-bold">1</span>
-              <span>Open the chat, tap the <strong className="text-white">three dots (⋮)</strong> in the top-right corner.</span>
+          <ol className="space-y-3.5 text-xs sm:text-sm font-serif text-[#57534E]">
+            <li className="flex items-start gap-3">
+              <span className="shrink-0 w-6 h-6 rounded-full bg-[#EFECE6] border border-[#E2DDD3] text-[#1C1917] flex items-center justify-center text-[10px] font-mono mt-0.5 font-bold">
+                01
+              </span>
+              <span>Open the WhatsApp chat and tap the three dots in the top-right corner.</span>
             </li>
-            <li className="flex items-start space-x-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-surface-elevated border border-white/10 text-brand-emerald flex items-center justify-center text-xs font-mono font-bold">2</span>
-              <span>Tap <strong className="text-white">More</strong> &gt; <strong className="text-white">Export chat</strong>.</span>
+            <li className="flex items-start gap-3">
+              <span className="shrink-0 w-6 h-6 rounded-full bg-[#EFECE6] border border-[#E2DDD3] text-[#1C1917] flex items-center justify-center text-[10px] font-mono mt-0.5 font-bold">
+                02
+              </span>
+              <span>Tap <strong className="text-[#1C1917] font-semibold">More</strong>, then tap <strong className="text-[#1C1917] font-semibold">Export chat</strong>.</span>
             </li>
-            <li className="flex items-start space-x-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-surface-elevated border border-white/10 text-brand-emerald flex items-center justify-center text-xs font-mono font-bold">3</span>
-              <span>Choose <strong className="text-brand-emerald">Without media</strong>.</span>
+            <li className="flex items-start gap-3">
+              <span className="shrink-0 w-6 h-6 rounded-full bg-[#EFECE6] border border-[#E2DDD3] text-[#1C1917] flex items-center justify-center text-[10px] font-mono mt-0.5 font-bold">
+                03
+              </span>
+              <span>Choose <strong className="text-[#1C1917] font-semibold">Without media</strong>.</span>
             </li>
-            <li className="flex items-start space-x-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-surface-elevated border border-white/10 text-brand-emerald flex items-center justify-center text-xs font-mono font-bold">4</span>
-              <span>Share or save the exported <code className="text-xs font-mono text-zinc-200 bg-surface-elevated px-1.5 py-0.5 rounded">.txt</code> file and drop it directly onto the screen.</span>
+            <li className="flex items-start gap-3">
+              <span className="shrink-0 w-6 h-6 rounded-full bg-[#EFECE6] border border-[#E2DDD3] text-[#1C1917] flex items-center justify-center text-[10px] font-mono mt-0.5 font-bold">
+                04
+              </span>
+              <span>Save the <code className="text-xs font-mono text-[#1C1917] bg-[#EFECE6] border border-[#E2DDD3] px-1.5 py-0.5 rounded">.txt</code> file and drop it here to begin.</span>
             </li>
           </ol>
         )}
 
-        <div className="mt-6 pt-4 border-t border-white/10 flex justify-end">
+        {/* Footer */}
+        <div className="mt-6 pt-4 border-t border-[#E2DDD3] flex items-center justify-between">
+          <span className="text-[10px] font-mono text-[#78716C]">
+            Zero servers · 100% On-Device
+          </span>
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-sm font-semibold bg-surface-elevated hover:bg-white/10 text-white transition-colors"
+            className="px-5 py-2 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-white font-mono text-xs font-medium transition-colors cursor-pointer"
           >
-            Got it, thanks!
+            Got it
           </button>
         </div>
       </div>

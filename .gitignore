@@ -22,3 +22,6 @@ yarn-error.log*
 # System
 .DS_Store
 Thumbs.db
+
+# Scratch / Local dev scripts
+scratch/
